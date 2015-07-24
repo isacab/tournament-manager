@@ -18,7 +18,7 @@ class CreateStagesTable extends Migration
             $table->enum('type', ['RoundRobin', 'SingleElimination']);
             $table->enum('status', ['NotStarted', 'InProgress', 'Finished'])->default('NotStarted');
             $table->boolean('thirdPrize')->default(0);
-            $table->boolean('doubleMeatings')->default(0);
+            $table->tinyInteger('meetings')->default(1);
             $table->integer('tournament_id')->unsigned()->index();
             $table->datetime('created_at')->default('0000-00-00 00:00');
             $table->datetime('updated_at')->default('0000-00-00 00:00');

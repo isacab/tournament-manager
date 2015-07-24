@@ -22,8 +22,8 @@ class CreateTournament1Seeder extends Seeder
 
         //Insert into stages table
         DB::table('stages')->insert([
-        	['name' => 'S1', 'type' => 'RoundRobin', 'tournament_id' => $tourid, 'status' => 'NotStarted', 'thirdPrize' => 0, 'doubleMeatings' => 0],
-            ['name' => 'S2', 'type' => 'SingleElimination', 'tournament_id' => $tourid, 'status' => 'NotStarted', 'thirdPrize' => 1, 'doubleMeatings' => 0]
+        	['name' => 'S1', 'type' => 'RoundRobin', 'tournament_id' => $tourid, 'status' => 'NotStarted', 'thirdPrize' => 0, 'meetings' => 1],
+            ['name' => 'S2', 'type' => 'SingleElimination', 'tournament_id' => $tourid, 'status' => 'NotStarted', 'thirdPrize' => 1, 'meetings' => 1]
         ]);
 
         //Insert into competitors table

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\TournamentManager\MatchCreators;
+namespace App\TournamentManager\Schedulers;
 
-use App\TournamentManager\MatchCreators\AbstractMatchCreator;
+use App\TournamentManager\Schedulers\AbstractScheduler;
 use App\Models\Match;
 use App\Models\BracketMatch;
 
-class SingleEliminationCreator extends AbstractMatchCreator 
+class SingleEliminationScheduler extends AbstractScheduler 
 {
 	public function createMatches($poolId, array $competitorIds, array $params = array())
 	{

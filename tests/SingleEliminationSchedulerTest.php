@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use League\CLImate\CLImate;
 
-class SingleEliminationCreatorTest extends TestCase
+class SingleEliminationSchedulerTest extends TestCase
 {
     private $climate;
 
@@ -19,11 +19,11 @@ class SingleEliminationCreatorTest extends TestCase
 
     public function testCanCreateSingleElimination()
     {
-    	$matchCreator = App::make('App\TournamentManager\MatchCreators\SingleEliminationCreator');
+    	$scheduler = App::make('App\TournamentManager\Schedulers\SingleEliminationScheduler');
 
         $competitorIds = range(1, 4);
 
-    	$matchCreator->createMatches(1, $competitorIds, ['thirdPrize' => 0]);
+    	$scheduler->createMatches(1, $competitorIds, ['thirdPrize' => 0]);
 
         $matchesExpected = [
             ['round' => '1', 'home_id' => '1',  'away_id' => '2',  'state' => 'Open',   'winner_id' => null],
@@ -44,11 +44,11 @@ class SingleEliminationCreatorTest extends TestCase
 
     public function testCanCreateSingleEliminationWithBronzeGame()
     {
-        $matchCreator = App::make('App\TournamentManager\MatchCreators\SingleEliminationCreator');
+        $scheduler = App::make('App\TournamentManager\Schedulers\SingleEliminationScheduler');
 
         $competitorIds = range(1, 4);
 
-        $matchCreator->createMatches(1, $competitorIds, ['thirdPrize' => 1]);
+        $scheduler->createMatches(1, $competitorIds, ['thirdPrize' => 1]);
 
         $matches = DB::table('matches')->leftJoin('bracket_matches', 'match_id', '=', 'id')->get();
 
@@ -73,11 +73,11 @@ class SingleEliminationCreatorTest extends TestCase
 
     public function testCanCreateSingleEliminationWithAutoWins()
     {
-        $matchCreator = App::make('App\TournamentManager\MatchCreators\SingleEliminationCreator');
+        $scheduler = App::make('App\TournamentManager\Schedulers\SingleEliminationScheduler');
 
         $competitorIds = [1,null,2,3,null,null,null,4];
 
-        $matchCreator->createMatches(1, $competitorIds, ['thirdPrize' => 1]);
+        $scheduler->createMatches(1, $competitorIds, ['thirdPrize' => 1]);
 
         $matches = DB::table('matches')->leftJoin('bracket_matches', 'match_id', '=', 'id')->get();
 
@@ -111,11 +111,11 @@ class SingleEliminationCreatorTest extends TestCase
 
     public function testCanCreateSingleEliminationWith2Competitors()
     {
-        $matchCreator = App::make('App\TournamentManager\MatchCreators\SingleEliminationCreator');
+        $scheduler = App::make('App\TournamentManager\Schedulers\SingleEliminationScheduler');
 
         $competitorIds = [1,2];
 
-        $matchCreator->createMatches(1, $competitorIds);
+        $scheduler->createMatches(1, $competitorIds);
 
         $matches = DB::table('matches')->leftJoin('bracket_matches', 'match_id', '=', 'id')->get();
 
@@ -131,11 +131,11 @@ class SingleEliminationCreatorTest extends TestCase
 
     public function testCanCreateSingleEliminationWith3Competitors()
     {
-        $matchCreator = App::make('App\TournamentManager\MatchCreators\SingleEliminationCreator');
+        $scheduler = App::make('App\TournamentManager\Schedulers\SingleEliminationScheduler');
 
         $competitorIds = [1,2,3,null];
 
-        $matchCreator->createMatches(1, $competitorIds);
+        $scheduler->createMatches(1, $competitorIds);
 
         $matches = DB::table('matches')->leftJoin('bracket_matches', 'match_id', '=', 'id')->get();
 

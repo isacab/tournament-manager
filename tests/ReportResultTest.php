@@ -21,9 +21,9 @@ class ReportResultTest extends TestCase
 
 	public function testCanReportRoundRobinResult()
 	{
-    	$matchCreator = App::make('App\TournamentManager\MatchCreators\RoundRobinCreator');
+    	$scheduler = App::make('App\TournamentManager\Schedulers\RoundRobinScheduler');
 
-	    $matchCreator->createMatches(1, range(1, 4), ['doubleMeatings' => 0]);
+	    $scheduler->createMatches(1, range(1, 4), ['doubleMeatings' => 0]);
 
 		$mrh = new MatchResultHandler();
 
@@ -61,8 +61,8 @@ class ReportResultTest extends TestCase
 
 	public function testCanClearRoundRobinResult()
 	{
-    	$matchCreator = App::make('App\TournamentManager\MatchCreators\RoundRobinCreator');
-	    $matchCreator->createMatches(1, range(1, 4), ['doubleMeatings' => 0]);
+    	$scheduler = App::make('App\TournamentManager\Schedulers\RoundRobinScheduler');
+	    $scheduler->createMatches(1, range(1, 4), ['doubleMeatings' => 0]);
 
 		$mrh = new MatchResultHandler();
 
@@ -80,8 +80,8 @@ class ReportResultTest extends TestCase
 
 	public function testCanReportBracketResult()
 	{
-    	$matchCreator = App::make('App\TournamentManager\MatchCreators\SingleEliminationCreator');
-	    $matchCreator->createMatches(1, range(1, 4), ['thirdPrize' => 1]);
+    	$scheduler = App::make('App\TournamentManager\Schedulers\SingleEliminationScheduler');
+	    $scheduler->createMatches(1, range(1, 4), ['thirdPrize' => 1]);
 
 		$mrh = new MatchResultHandler();
 
@@ -133,8 +133,8 @@ class ReportResultTest extends TestCase
 
 	public function testCanRereportBracketResult()
 	{
-    	$matchCreator = App::make('App\TournamentManager\MatchCreators\SingleEliminationCreator');
-	    $matchCreator->createMatches(1, range(1, 4), ['thirdPrize' => 1]);
+    	$scheduler = App::make('App\TournamentManager\Schedulers\SingleEliminationScheduler');
+	    $scheduler->createMatches(1, range(1, 4), ['thirdPrize' => 1]);
 
 		$mrh = new MatchResultHandler();
 

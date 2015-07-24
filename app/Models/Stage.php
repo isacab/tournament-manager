@@ -67,7 +67,7 @@ class Stage extends Model
             $pool->competitors()->attach($competitors);
 
             $scheduler->createMatches(
-                $pool->id, $competitors, ['thirdPrize' => $this->thirdPrize, 'doubleMeatings' => $this->doubleMeatings]
+                $pool->id, $competitors, ['thirdPrize' => $this->thirdPrize, 'meetings' => $this->meetings]
             );
         }
 
@@ -118,7 +118,7 @@ class Stage extends Model
         if(!$this->type)
             return null;
 
-        $schedulingClass = 'App\TournamentManager\MatchCreators\\'. $this->type. 'Creator';
+        $schedulingClass = 'App\TournamentManager\Schedulers\\'. $this->type. 'Scheduler';
 
         return new $schedulingClass();
     }
