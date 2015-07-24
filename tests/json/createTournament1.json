@@ -1,0 +1,44 @@
+{
+	"name": "Tournament 1",
+	"description": "info...",
+	"stages": [
+		{
+			"name": "S1",
+			"type": "RoundRobin"
+		},
+		{
+			"name": "S2",
+			"type": "SingleElimination",
+			"thirdPrize": 1
+		}
+	],
+	"competitors": [
+		{
+			"name": "a"
+		},
+		{
+			"name": "b"
+		},
+		{
+			"name": "c"
+		},
+		{
+			"name": "d"
+		},
+		{
+			"name": "e"
+		},
+		{
+			"name": "f"
+		},
+		{
+			"name": "g"
+		},
+		{
+			"name": "h"
+		},
+		{
+			"name": "i"
+		}
+	]
+}
