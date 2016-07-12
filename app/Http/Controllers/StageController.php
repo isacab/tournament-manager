@@ -37,9 +37,9 @@ class StageController extends Controller
         $query = Stage::query()->with('pools');
 
         if($params['matches'] == 1)
-            $query->with(['pools.matches' => function($query){
+            $query->with(['pools.matches' => function($query) {
                 $query->leftJoin('bracket_matches', 'bracket_matches.match_id', '=', 'matches.id');
-            }]);
+            }, 'pools.matches.results']);
 
         if($params['competitors'] == 1)
             $query->with('pools.competitors');

@@ -11,14 +11,7 @@ class Stage extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'type', 'status', 'doubleMeatings', 'thirdPrize'];
-
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
+    protected $fillable = ['name', 'type', 'meetings', 'thirdPrize'];
 
     /**
      * The database table used by the model.
@@ -38,79 +31,6 @@ class Stage extends Model
     }
 
     /**
-     * Create pools and matches and set status to "InProgress".
-     *
-     * @var array $data     example: array(
-     *                                     array(
-     *                                         "name" => "Group A",
-     *                                         "competitors" => array(1,2,3,null,4,5,6,7)
-     *                                     ),
-     *                               )
-     * @return  boolean
-     */
-    public function start($data)
-    {
-        $scheduler = $this->getScheduler();
-
-        if(!$scheduler || empty($data))
-            return false;
-
-        foreach ($data as $dataLine) 
-        {
-            $competitors = array();
-
-            if(isset($dataLine['competitors']))
-                $competitors = $dataLine['competitors'];
-
-            $pool = $this->pools()->create($dataLine);
-
-            $pool->competitors()->attach($competitors);
-
-            $scheduler->createMatches(
-                $pool->id, $competitors, ['thirdPrize' => $this->thirdPrize, 'meetings' => $this->meetings]
-            );
-        }
-
-        $this->status = 'InProgress';
-
-        $this->save();
-
-        return true;
-    }
-
-    /**
-     * Delete pools and matches and set status to "NotStarted".
-     */
-    public function reset()
-    {
-        $this->pools()->delete();
-
-        $this->status = 'NotStarted';
-
-        $this->save();
-    }
-    
-    /**
-     * Set status to "Finished".
-     */
-    public function finalize()
-    {
-        $this->status = 'Finished';
-
-        $this->save();
-    }
-
-    /**
-     * Set status to "InProgress".
-     */
-    public function resume()
-    {
-        $this->status = 'InProgress';
-
-        $this->save();
-    }
-
-    /**
      * Get the scheduling class for this stage.
      */
     public function getScheduler()
@@ -118,8 +38,9 @@ class Stage extends Model
         if(!$this->type)
             return null;
 
-        $schedulingClass = 'App\TournamentManager\Schedulers\\'. $this->type. 'Scheduler';
+        $scheduler = 'App\TournamentManager\Schedulers\\'. $this->type. 'Scheduler';
 
-        return new $schedulingClass();
+        return new $scheduler();
     }
 }
+

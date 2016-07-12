@@ -33,4 +33,17 @@ function array_add_column(array $arr, $column, $default = null)
     );
 }
 
+function array_is_nested($arr)
+{
+	if(is_array($arr))
+	{
+		foreach ($arr as $value) {
+			if(is_array($arr))
+				return true;
+		}
+	}
+
+	return false;
+}
+
 ?>

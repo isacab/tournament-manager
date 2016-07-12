@@ -7,15 +7,15 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Match;
-use App\TournamentManager\MatchResult\MatchResultHandler;
+use App\TournamentManager\MatchResultService;
 
 class MatchController extends Controller
 {
-    private $matchResultHandler;
+    private $matchResultService;
 
-    public function __construct(MatchResultHandler $matchResultHandler)
+    public function __construct(MatchResultService $matchResultService)
     {
-        $this->matchResultHandler = $matchResultHandler;
+        $this->matchResultService = $matchResultService;
     }
 
     /**
@@ -25,7 +25,7 @@ class MatchController extends Controller
      * @param  int  $mid
      * @return Response
      */
-    public function show($tid, $mid)
+    public function show($id)
     {
         $match = Match::with('results')->findOrFail($id);
 
@@ -43,7 +43,7 @@ class MatchController extends Controller
     {
         $data = $request->all();
 
-        $this->matchResultHandler->report($id, $data['home_score'], $data['away_score'], $data['winner_id']);
+        $this->matchResultService->report($id, $data['home_score'], $data['away_score'], $data['winner_id']);
     }
 
     /**
@@ -55,6 +55,6 @@ class MatchController extends Controller
      */
     public function clear($id)
     {
-        $this->matchResultHandler->clear($id);
+        $this->matchResultService->clear($id);
     }
 }

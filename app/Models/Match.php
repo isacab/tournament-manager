@@ -22,7 +22,7 @@ class Match extends Model
      */
     protected $fillable = ['comment', 'state', 'round', 'home_id', 'away_id', 'winner_id', 'pool_id'];
 
-    public function result()
+    public function results()
     {
         return $this->hasMany('App\Models\Result');
     }

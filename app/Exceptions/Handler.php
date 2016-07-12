@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Exceptions\BadRequestException;
 
 class Handler extends ExceptionHandler
 {
@@ -15,6 +16,7 @@ class Handler extends ExceptionHandler
      */
     protected $dontReport = [
         HttpException::class,
+        BadRequestException::class,
     ];
 
     /**
@@ -39,6 +41,18 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        if ($e instanceof BadRequestException) 
+        {
+            $message = $e->getMessage();
+            $status = 400;
+
+            return response()->json([
+                'success' => false,
+                'data'    => [],
+                'message' => $e->getMessage()
+            ], $status);
+        }
+
         return parent::render($request, $e);
     }
 }

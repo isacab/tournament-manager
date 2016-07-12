@@ -22,4 +22,9 @@ class Result extends Model
      */
     protected $fillable = ['match_id', 'home_score', 'away_score'];
 
+    public function match()
+    {
+        return $this->belongsTo('App\Models\Match');
+    }
+
 }

@@ -1,0 +1,37 @@
+<div ng-controller='TournamentController as tournamentCtrl'>
+	<div class="row" ng-show="tournamentCtrl.tournament">
+		<div class="col-md-3">
+			<h2>{{ tournamentCtrl.tournament.name || "Untitled" }}
+				<div id="admin-dropdown" class="dropdown pull-right">
+					<button class="btn btn-default dropdown-toggle danger" type="button" id="dropdownMenuAdmin" data-toggle="dropdown">
+						Admin
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuAdmin">
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Report results</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Change settings</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Delete</a></li>
+					</ul>
+				</div>
+			</h2>
+			<p><b>Date: </b>{{ tournamentCtrl.tournament.created_at | asDate | date:'yyyy-mm-dd hh:MM' }}</p> 
+			<p><b>Info: </b><br>{{ tournamentCtrl.tournament.description }}</p>
+		</div>
+		<div class="col-md-9" id="tabs" ng-controller="StageTabsController as stageTabsCtrl">
+			<div class="navigation">
+				<ul class="nav nav-tabs" role="tablist">
+					<li ng-repeat="stage in tournamentCtrl.tournament.stages" 
+						ng-class="{ active:stageTabsCtrl.isSet($index) }">
+						<a href="javascript:void(0)" ng-click="stageTabsCtrl.setTab($index, stage)">{{ stage.type | asGroupsOrBracket }} {{$index}}</a>
+					</li>
+				</ul>
+			</div>
+
+			<div class="tab tournament-content" ng-repeat="stage in tournamentCtrl.tournament.stages" 
+				ng-show="stageTabsCtrl.isSet($index)">
+				<div groups ng-if="stage.type === 'RoundRobin'"></div>
+				<div bracket ng-if="stage.type === 'SingleElimination'"></div>
+			</div>
+		</div>
+	</div>
+</div>

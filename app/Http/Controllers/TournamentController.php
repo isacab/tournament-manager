@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Http\Requests\StoreTournamentRequest;
+use App\Http\Requests\StartTournamentRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Tournament;
 use App\Models\Competitor;
-use App\TournamentManager\Queries\BulkInserter;
-use App\TournamentManager\Queries\TournamentSearch;
+use App\TournamentManager\BulkInserter;
+use App\TournamentManager\TournamentSearch;
+use App\TournamentManager\PoolCreator;
+use App\Exceptions\BadRequestException;
 
 use DB;
 
@@ -19,13 +23,17 @@ class TournamentController extends Controller
 
     private $bulkInserter;
 
+    private $poolCreator;
+
     public function __construct(
         TournamentSearch $tournamentSearch, 
-        BulkInserter $bulkInserter
+        BulkInserter $bulkInserter,
+        PoolCreator $poolCreator
     )
     {
         $this->tournamentSearch = $tournamentSearch;
         $this->bulkInserter = $bulkInserter;
+        $this->poolCreator = $poolCreator;
     }
 
     /**
@@ -47,10 +55,10 @@ class TournamentController extends Controller
      *
      * @return Response
      */
-    public function store(Request $request)
+    public function store(StoreTournamentRequest $request)
     {
         $id = DB::transaction(function() use ($request){
-            $data = $request->all();    
+            $data = $request->all();
 
             // Create tournament
             $tournament = Tournament::create($data);
@@ -61,7 +69,7 @@ class TournamentController extends Controller
     
             // Create competitors
             if(isset($data['competitors']))
-                $this->bulkInserter->insert('competitors', $data['competitors'], ['tournament_id' => $tournament->id]);
+                $this->bulkInserter->insert('App\Models\Competitor', $data['competitors'], ['tournament_id' => $tournament->id]);
     
             return $tournament->getKey();
         });
@@ -83,8 +91,6 @@ class TournamentController extends Controller
         $params = $request->only(['competitors', 'stages']);
 
         $included_relations = array_filter($params);
-
-        // dd($included_relations);
 
         $query = Tournament::query();
 
@@ -132,27 +138,37 @@ class TournamentController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function start($id, Request $request)
+    public function start($id, StartTournamentRequest $request)
     {
         $data = $request->all();
 
         $tournament = Tournament::findOrFail($id);
 
         $nextStage = DB::transaction(function() use ($data, $tournament){
+            
             // Finalize current stage
             $currentStage = $tournament->currentStage()->first();
 
             if($currentStage)
-                $currentStage->finalize();
+            {
+                $currentStage->status = "Finished";
+
+                $currentStage->save();
+            }
 
             // Get next stage
             $nextStage = $tournament->nextStage()->first();
+
 
             if(!$nextStage)
                 throw new \Exception("All stages are already finished.");
 
             // Start next stage!
-            $nextStage->start($data['pools']);
+            $this->poolCreator->create($nextStage, $data['pools']);
+
+            $nextStage->status = "InProgress";
+
+            $nextStage->save();
 
             return $nextStage;
         });
@@ -179,7 +195,9 @@ class TournamentController extends Controller
             if(!$curStage)
                 throw new \Exception("There is no stages to reset.");
 
-            $curStage->reset();
+            $curStage->pools()->delete();
+            $curStage->status = "NotStarted";
+            $curStage->save();
 
             return $curStage;
         });
@@ -198,31 +216,47 @@ class TournamentController extends Controller
         if(!$curStage)
             throw new \Exception("There is no stages to finalize.");
 
-        $curStage->finalize();
+        $curStage->status = "Finished";
+
+        $curStage->save();
 
         return response()->json([
             'id' => $curStage->id,
             'href' => action('StageController@show', [$curStage->id])]);
     }
 
-    public function resume($id)
+    public function back($id)
     {
-        $tournament = Tournament::findOrFail($id);
+        $stage = DB::transaction(function() use ($id)
+        {
+            $tournament = Tournament::findOrFail($id);
 
-        $stage = $tournament->currentStage()->first();
+            $currentStage = $tournament->currentStage()->first();
+            $prevStage = $tournament->previousStage()->first();
 
-        if($stage)
-            throw new \Exception("The tournament is already active");
+            if($currentStage)
+            {
+                $currentStage->pools()->delete();
+                $currentStage->status = "NotStarted";
+                $currentStage->save();
+            }
 
-        $stage = $tournament->previousStage()->first();
+            if($prevStage)
+            {
+                $prevStage->status = "InProgress";
+                $prevStage->save();
+                $currentStage = $prevStage;
+            }
 
-        if(!$stage)
-            throw new \Exception("The tournament has not started yet");
+            if(!$prevStage && !$currentStage)
+                throw new BadRequestException("The tournament has not started yet");
 
-        $stage->resume();
+            return $currentStage;
+        });
 
         return response()->json([
             'id' => $stage->id,
-            'href' => action('StageController@show', [$stage->id])]);
+            'href' => action('StageController@show', [$stage->id])
+        ]);
     }
 }

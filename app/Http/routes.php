@@ -12,7 +12,13 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
+    
+    /*return array_flatten(array_pluck([
+			['competitors' => [1,2,3]],
+			['competitors' => [4,5,6]],
+			['competitors' => [7,8,9]],
+    ], 'competitors'));*/
 });
 
 Route::resource('tournaments', 'TournamentController', [
@@ -21,7 +27,7 @@ Route::resource('tournaments', 'TournamentController', [
 Route::post('tournaments/{tid}/start', 'TournamentController@start');
 Route::post('tournaments/{tid}/reset', 'TournamentController@reset');
 Route::post('tournaments/{tid}/finalize', 'TournamentController@finalize');
-Route::post('tournaments/{tid}/resume', 'TournamentController@resume');
+Route::post('tournaments/{tid}/back', 'TournamentController@back');
 
 Route::resource('stages', 'StageController', [
 	'only' => ['show', 'update', 'destroy' ]

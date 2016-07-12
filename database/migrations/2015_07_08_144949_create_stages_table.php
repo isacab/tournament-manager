@@ -15,8 +15,8 @@ class CreateStagesTable extends Migration
         Schema::create('stages', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->default('');
-            $table->enum('type', ['RoundRobin', 'SingleElimination']);
-            $table->enum('status', ['NotStarted', 'InProgress', 'Finished'])->default('NotStarted');
+            $table->enum('type', ['RoundRobin', 'SingleElimination'])->default('SingleElimination');
+            $table->enum('status', ['NotStarted', 'InProgress', 'Finished', 'Paused'])->default('NotStarted');
             $table->boolean('thirdPrize')->default(0);
             $table->tinyInteger('meetings')->default(1);
             $table->integer('tournament_id')->unsigned()->index();

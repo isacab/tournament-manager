@@ -10,6 +10,8 @@ class CreateTournamentsTest extends TestCase
 {
 	private $climate;
 
+	private $outputFolder = __DIR__ . '\output';
+
 	public function setUp()
     {
         parent::setUp();
@@ -143,15 +145,16 @@ class CreateTournamentsTest extends TestCase
 		$this->assertDatabaseTableEquals($expectedTables['stages'], 'stages', ['created_at', 'updated_at']);
 	}
 
-	public function testCanResumeTournament()
+	public function testCanBackTournament()
 	{
+		DB::statement(DB::raw('PRAGMA foreign_keys=1'));
 		DB::beginTransaction();
 			
 			$this->seed('CreateTournament1Seeder');
 			$this->seed('StartTournament1Seeder');
 			$this->seed('Start2Tournament1Seeder');
 			$this->seed('FinalizeTournament1Seeder');
-			$this->seed('ResumeTournament1Seeder');
+			$this->seed('BackTournament1Seeder');
 
 			$expectedTables = $this->getDatabaseContent();
 
@@ -162,7 +165,11 @@ class CreateTournamentsTest extends TestCase
 		$this->seed('Start2Tournament1Seeder');
 		$this->seed('FinalizeTournament1Seeder');
 
-		$this->post('/tournaments/1/resume');
+		$response = $this->call('POST', '/tournaments/1/back');
+
+		// $file = fopen($this->outputFolder. "\\".__FUNCTION__.".html", "w") or die("Unable to open file!");
+		// fwrite($file, $response->content());
+		// fclose($file);
 		
 		//print tables
 		// $this->climate->table(DB::table('stages')->get());
@@ -175,13 +182,14 @@ class CreateTournamentsTest extends TestCase
 
 	public function testCanResetTournament()
 	{
+		DB::statement(DB::raw('PRAGMA foreign_keys=1'));
 		DB::beginTransaction();
 			
 			$this->seed('CreateTournament1Seeder');
 			$this->seed('StartTournament1Seeder');
 			$this->seed('Start2Tournament1Seeder');
 			$this->seed('FinalizeTournament1Seeder');
-			$this->seed('ResumeTournament1Seeder');
+			$this->seed('BackTournament1Seeder');
 			$this->seed('ResetTournament1Seeder');
 
 			$expectedTables = $this->getDatabaseContent();
@@ -192,12 +200,20 @@ class CreateTournamentsTest extends TestCase
 		$this->seed('StartTournament1Seeder');			
 		$this->seed('Start2Tournament1Seeder');
 		$this->seed('FinalizeTournament1Seeder');
-		$this->seed('ResumeTournament1Seeder');
+		$this->seed('BackTournament1Seeder');
 
-		$this->post('/tournaments/1/reset');
+		$response = $this->call('POST', '/tournaments/1/reset');
+
+		// $file = fopen($this->outputFolder. "\\".__FUNCTION__.".html", "w") or die("Unable to open file!");
+		// fwrite($file, $response->content());
+		// fclose($file);
 		
 		//print tables
+		// $this->climate->table(DB::table('tournaments')->get());
 		// $this->climate->table(DB::table('stages')->get());
+		// $this->climate->table(DB::table('competitors')->get());
+		// $this->climate->table(DB::table('pools')->get());
+		// $this->climate->table(DB::table('pool_members')->get());
 
 		$this->assertResponseOk();
 

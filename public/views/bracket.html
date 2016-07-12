@@ -1,0 +1,25 @@
+if($type == "Knockout" || $type == "Both"){ ?>
+			<div id="brackets" class="tab tournament-content hidden"><?php
+			//Knockoutstage
+			?>
+			<div class="bracket-view">
+				<a href="fullscreen.php?tourid=<?php echo $tournament; ?>" class="fullscreen btn btn-default btn-xs hidden-xs" title="Full Screen">
+					<span class="bracket-nav glyphicon glyphicon-fullscreen"></span>
+				</a>
+			</div>
+			<a href="javascript:void(0)" id="back-bracket" class="btn btn-default"><span class="bracket-nav glyphicon glyphicon-chevron-left"></span></a><!--&larr;</a>-->
+			<a href="javascript:void(0)" id="next-bracket" class="btn btn-default"><span class="bracket-nav glyphicon glyphicon-chevron-right"></span></a><!--&rarr;</a>-->
+			<div class="bracket-wrapper">
+			<?php
+			printBracket($tournament);
+			?></div><?php
+			$sel_time = microtime(true);
+			printf("Connect time: %f\nQuery time: %f\n",
+			       $con_time-$time,
+			       $sel_time-$con_time);
+			?>
+			</div>
+			<?php 
+		} //knockout
+	} // tournament exist 
+} //tournament is numeric ?>

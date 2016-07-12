@@ -1,0 +1,24 @@
+<ul>
+	<li ng-repeat="pool in stage.pools">
+		<h3>Group {{ String.fromCharCode(65 + $index) }}</h3>
+		<div class="matches-container hidden">
+			<a href="javascript:void(0)" class="toggle-matches">Show Matches</a>
+			<a href='javascript:void(0)' class='report-results pull-right'>Report Results</a>
+			<div class="group-matches">
+				<table class="table matches-table" ng-repeat="(key, value) in pool.matches | groupBy: 'round'">
+					<tr>
+						<td colspan='4' class='grey'><b>Round {{ key }}</b></td>
+					</tr>
+					<tr ng-repeat="match in value">
+						<td class='grey match-nr'>#{{$index}}</td>
+						<td class='comp-name-td right'>{{ match.home_id }}</td
+						<td class='score-td center'>0 - 0</td>
+						<td class='comp-name-td left'>{{ match.away_id }}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="standings-wrapper">
+		</div>
+	</li>
+</ul>

@@ -4,7 +4,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-use App\TournamentManager\MatchResult\MatchResultHandler;
+use App\TournamentManager\MatchResultService;
 use League\CLImate\CLImate;
 use App\Models\Tournament;
 
@@ -25,7 +25,7 @@ class ReportResultTest extends TestCase
 
 	    $scheduler->createMatches(1, range(1, 4), ['doubleMeatings' => 0]);
 
-		$mrh = new MatchResultHandler();
+		$mrh = new MatchResultService();
 
 		$mrh->report(1, 3, 0, 1);
 		$mrh->report(2, 3, 4, 3);
@@ -64,7 +64,7 @@ class ReportResultTest extends TestCase
     	$scheduler = App::make('App\TournamentManager\Schedulers\RoundRobinScheduler');
 	    $scheduler->createMatches(1, range(1, 4), ['doubleMeatings' => 0]);
 
-		$mrh = new MatchResultHandler();
+		$mrh = new MatchResultService();
 
 		$mrh->clear(1);
 
@@ -83,7 +83,7 @@ class ReportResultTest extends TestCase
     	$scheduler = App::make('App\TournamentManager\Schedulers\SingleEliminationScheduler');
 	    $scheduler->createMatches(1, range(1, 4), ['thirdPrize' => 1]);
 
-		$mrh = new MatchResultHandler();
+		$mrh = new MatchResultService();
 
 		// Match 1
 		$mrh->report(1, 3, 0, 1);
@@ -136,7 +136,7 @@ class ReportResultTest extends TestCase
     	$scheduler = App::make('App\TournamentManager\Schedulers\SingleEliminationScheduler');
 	    $scheduler->createMatches(1, range(1, 4), ['thirdPrize' => 1]);
 
-		$mrh = new MatchResultHandler();
+		$mrh = new MatchResultService();
 
 		// Match 1
 		$mrh->report(1, 3, 0, 1);

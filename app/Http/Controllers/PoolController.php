@@ -25,7 +25,7 @@ class PoolController extends Controller
         if($params['matches'] == 1)
             $query->with(['matches' => function($query){
                 $query->leftJoin('bracket_matches', 'bracket_matches.match_id', '=', 'matches.id');
-            }]);
+            }, 'matches.results']);
 
         if($params['competitors'] == 1)
             $query->with('competitors');

@@ -17,7 +17,8 @@ class CreateTournament1Seeder extends Seeder
         $tourid = DB::table('tournaments')->insertGetId([
         	'name' 			=> 'Tournament 1',
         	'description' 	=> 'info...',//LoremIpsum::get(),
-        	'privacy' 		=> 'Public'
+        	'privacy' 		=> 'Public',
+            'type'          => 'GroupsToKnockout'
         ]);
 
         //Insert into stages table

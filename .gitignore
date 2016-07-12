@@ -5,3 +5,4 @@ Homestead.yaml
 TournamentManager.sublime-project
 TournamentManager.sublime-workspace
 TODO.txt
+/tests/output

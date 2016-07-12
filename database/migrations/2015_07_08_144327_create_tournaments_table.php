@@ -17,6 +17,7 @@ class CreateTournamentsTable extends Migration
             $table->string('name')->default('');
             $table->text('description')->default('');
             $table->enum('privacy', ['Public', 'Private'])->default('Public');
+            $table->string('type')->default('');
             $table->datetime('created_at')->default('0000-00-00 00:00');
             $table->datetime('updated_at')->default('0000-00-00 00:00');
             //$table->integer('user_id')->unsigned()->index();
